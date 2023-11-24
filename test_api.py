@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from core.models import ContactModel
 
-client = TestClient(app) # API_URL
+client = TestClient(app)
 
 def test_api_access():
     
@@ -14,13 +14,6 @@ def test_api_access():
 
 def test_api_add_contact():
     
-    # test_contact_data = ContactModel(
-    #     name = "CoTest",
-    #     gender = "female",
-    #     age = 33,
-    #     email = "ct@i.com"
-    # )
-    
     add_test_data = {
         "name": "MyTest",
         "gender": "female",
@@ -30,14 +23,11 @@ def test_api_add_contact():
 
     response = client.post(
         "/add_contact", 
-        json = add_test_data #test_contact_data.model_dump()
+        json = add_test_data 
     )
 
     assert response.status_code == 200
     assert response.json()["message"] == "successful"
-    # contact = ContactModel(
-    #     **response.json()
-    # )
 
 def test_api_read_contact():
     

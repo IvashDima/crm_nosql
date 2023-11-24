@@ -47,38 +47,3 @@ class CrmDatabase():
 
     def deleteContactByName(self, contact_name: str):
         return self.contacts_collection.delete_one({"name": contact_name})
-
-
-    # result = contacts_collection.insert_one({
-    #         "name": "test4",
-    #         "gender": "male",
-    #         "age": 20,
-    #         "email": "t4@com"
-    #     })
-    # print(result)
-
-    # result = contacts_collection.replace_one({"name": "test2"},{
-    #         "name": "test3",
-    #         "gender": "female",
-    #         "age": 22,
-    #         "email": "t3@i.com"
-    #     })
-    # print(result)
-
-    # result = contacts_collection.delete_one({"name": "test1"})
-    # print(result)
-
-    # print("STATUS!!!\n")
-    # contacts1 = contacts_collection.find({})
-    # for cont in contacts1:
-    #     print(cont)
-
-    # contacts = contacts_collection.find({"name":"test2"})
-    # for cont in contacts:
-    #     print(cont)
-
-    
-# print("test_func")
-# contacts2 = CrmDatabase().getAllContacts()
-# for cont in contacts2:
-#     print(cont)

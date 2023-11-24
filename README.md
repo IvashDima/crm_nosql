@@ -42,6 +42,7 @@ It automatically works when creating a contract. Or manually need to run functio
 checks/public_data/get_age_by_name
 checks/public_data/get_gender_by_name
 5. Show log: Log file is located in the root folder of the application with name: my_log_{currentdate}.log.
+
 6. Run TESTs: 
 pytest -v test_api.py
 

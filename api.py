@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from database import CrmDatabase, ContactModel
 from src.urls import API_HOST, API_PORT
 
+from logs.config import logger
 
 app = FastAPI()
 db = CrmDatabase()
@@ -30,16 +31,19 @@ def getContactByName(contact_name: str):
 @app.post("/add_contact")
 def addContact(contact: ContactModel):
     db.insertContact(contact)
+    logger.info(f"Contact {contact.name} created successful")
     return {"message": "successful"}
 
 @app.put("/contacts/{contact_name}")
 def updateContact(contact_name: str, contact: ContactModel):
     db.updateContactByName(contact_name, contact)
+    logger.info(f"Contact {contact_name} updated successful")
     return {"message": "successful"}
 
 @app.delete("/contacts/{contact_name}")
 def deleteContact(contact_name: str):
     db.deleteContactByName(contact_name=contact_name)
+    logger.info(f"Contact {contact_name} updated successful")
     return {"message": "successful"}
 
 

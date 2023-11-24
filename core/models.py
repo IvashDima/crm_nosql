@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, EmailStr
-from src.date_format import *
+from typing import Dict
+# from src.date_format import *
 
 
 class Base(BaseModel):
@@ -14,7 +15,7 @@ class ContactModel(Base):
     age: int
     email: EmailStr
 
-
+contact_list: Dict[int, ContactModel] = {}
 
 
 
