@@ -1,13 +1,54 @@
 import uvicorn
-from fastapi import FastAPI
+from typing import Annotated
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from database import CrmDatabase, ContactModel
+from core.models import ContactModel, User, UserInDB
+from core.logics import *
 from src.urls import API_HOST, API_PORT
 
 from logs.config import logger
 
 app = FastAPI()
-db = CrmDatabase()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    user = fake_decode_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    logger.info(f"get_current_user {user}")
+    return user
+
+async def get_current_active_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+@app.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    user_dict = fake_users_db.get(form_data.username)
+    if not user_dict:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    user = UserInDB(**user_dict)
+    hashed_password = fake_hash_password(form_data.password)
+    if not hashed_password == user.hashed_password:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    logger.info(f"login {user.username}")
+    return {"access_token": user.username, "token_type": "bearer"}
+
+
+@app.get("/users/me")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
+    logger.info(f"read_users_me {current_user}")
+    return current_user
 
 @app.get("/")
 def getAccess():
@@ -16,35 +57,32 @@ def getAccess():
 
 @app.get("/contacts")
 def getContacts():
-    all_contacts = db.getAllContacts()
-    result = []
-    for contact in all_contacts:
-        del contact["_id"]
-        result.append(contact)
-
+    result = read_contacts()
     return {"data" : result}
 
 @app.get("/contacts/{contact_name}")
 def getContactByName(contact_name: str):
-    return db.getContactByName(contact_name).model_dump()
+    result = read_contact_by_name(contact_name)
+    return result
 
 @app.post("/add_contact")
 def addContact(contact: ContactModel):
-    db.insertContact(contact)
-    logger.info(f"Contact {contact.name} created successful")
-    return {"message": "successful"}
+    result = add_contact(contact)
+    logger.info(f"Contact {contact.name} added successful")
+    return result
 
 @app.put("/contacts/{contact_name}")
 def updateContact(contact_name: str, contact: ContactModel):
-    db.updateContactByName(contact_name, contact)
+    result = edit_contacts(contact_name, contact)
+    
     logger.info(f"Contact {contact_name} updated successful")
-    return {"message": "successful"}
+    return result
 
 @app.delete("/contacts/{contact_name}")
 def deleteContact(contact_name: str):
-    db.deleteContactByName(contact_name=contact_name)
-    logger.info(f"Contact {contact_name} updated successful")
-    return {"message": "successful"}
+    result = remove_contacts(contact_name=contact_name)
+    logger.info(f"Contact {contact_name} deleted successful")
+    return result
 
 
 class ExternalAPI():
@@ -55,8 +93,3 @@ class ExternalAPI():
                 port = API_PORT,
                 reload=True,
                 log_level="info")
-        
-# print("test_test_func")
-# contacts2 = db.getAllContacts()
-# for cont in contacts2:
-#     print(cont)

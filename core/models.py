@@ -5,7 +5,7 @@ from typing import Dict
 
 
 class Base(BaseModel):
-    id: UUID = Field(default_factory=uuid4, alias="_id")
+    ext_id: UUID = Field(default_factory=uuid4, alias="_id")
     # created: datetime = Field(default_factory=currentdatetime)
 
 
@@ -17,14 +17,22 @@ class ContactModel(Base):
 
 contact_list: Dict[int, ContactModel] = {}
 
+class User(BaseModel):
+    username: str
+    email: str | None = None
+    full_name: str | None = None
+    disabled: bool | None = None
+
+class UserInDB(User):
+    hashed_password: str
 
 
-from email_validator import validate_email, EmailNotValidError
+# from email_validator import validate_email, EmailNotValidError
 
-email = "my+address@example.org"
+# email = "my+address@example.org"
 
-try:
-  emailinfo = validate_email(email, check_deliverability=False)
-  email = emailinfo.normalized
-except EmailNotValidError as e:
-  print(str(e))
+# try:
+#   emailinfo = validate_email(email, check_deliverability=False)
+#   email = emailinfo.normalized
+# except EmailNotValidError as e:
+#   print(str(e))
