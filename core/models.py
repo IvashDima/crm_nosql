@@ -3,20 +3,16 @@ from pydantic import BaseModel, Field, EmailStr
 from src.date_format import *
 
 
-class Basis(BaseModel):
+class Base(BaseModel):
     id: UUID = Field(default_factory=uuid4, alias="_id")
     # created: datetime = Field(default_factory=currentdatetime)
 
 
-class ContactModel(Basis):
+class ContactModel(Base):
     name: str = Field(max_length=50)#(max=50)
     gender: str
     age: int
     email: EmailStr
-
-
-
-
 
 
 

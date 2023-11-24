@@ -1,0 +1,5 @@
+
+
+API_HOST = '0.0.0.0'
+API_PORT = 4558
+API_URL = str(API_HOST) + str(API_PORT)

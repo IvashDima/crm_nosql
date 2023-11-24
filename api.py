@@ -2,10 +2,16 @@ import uvicorn
 from fastapi import FastAPI
 
 from database import CrmDatabase, ContactModel
+from src.urls import API_HOST, API_PORT
 
 
 app = FastAPI()
 db = CrmDatabase()
+
+@app.get("/")
+def getAccess():
+    return {"msg": "Hello World"}
+
 
 @app.get("/contacts")
 def getContacts():
@@ -14,13 +20,14 @@ def getContacts():
     for contact in all_contacts:
         del contact["_id"]
         result.append(contact)
+
     return {"data" : result}
 
 @app.get("/contacts/{contact_name}")
 def getContactByName(contact_name: str):
     return db.getContactByName(contact_name).model_dump()
 
-@app.post("/contacts")
+@app.post("/add_contact")
 def addContact(contact: ContactModel):
     db.insertContact(contact)
     return {"message": "successful"}
@@ -35,12 +42,13 @@ def deleteContact(contact_name: str):
     db.deleteContactByName(contact_name=contact_name)
     return {"message": "successful"}
 
+
 class ExternalAPI():
     @staticmethod
     def startAPI():
         uvicorn.run("api:app",
-                host='0.0.0.0',
-                port=4558,
+                host = API_HOST,
+                port = API_PORT,
                 reload=True,
                 log_level="info")
         

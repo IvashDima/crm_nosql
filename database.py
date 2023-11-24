@@ -2,11 +2,8 @@ from core.models import ContactModel
 from pymongo import MongoClient
 
 
-class CrmDatabase:
-    # mongo_uri = "mongodb://localhost:27017/crm_database.db"
-    # mongodb+srv://admin:Password123@mycluster.zvhn1zi.mongodb.net/?retryWrites=true&w=majority
-    # mongodb+srv://admin:Password123@localhost/?retryWrites=true&w=majority
-    client = MongoClient("localhost", 27017)#(mongo_uri)
+class CrmDatabase():
+    client = MongoClient("localhost", 27017)
     database = client.crm_database
 
     contacts_collection = database.contacts
