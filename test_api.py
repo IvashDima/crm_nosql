@@ -32,6 +32,7 @@ def test_api_add_contact():
 def test_api_read_contact():
     
     response = client.get("/contacts/MyTest")
+    
     assert response.status_code == 200
     assert response.json()["email"] == "mt@i.com"
 
