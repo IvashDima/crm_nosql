@@ -1,19 +1,17 @@
-from uuid import UUID, uuid4
+from uuid import uuid4
 from pydantic import BaseModel, Field, EmailStr
 from typing import Dict
-# from src.date_format import *
-
+from src.date_format import datetime, currentdatetime
 
 class Base(BaseModel):
-    ext_id: UUID = Field(default_factory=uuid4, alias="_id")
-    # created: datetime = Field(default_factory=currentdatetime)
-
+    ext_id: str = Field(default_factory=lambda: uuid4().hex)
+    created: datetime = Field(default=currentdatetime)
 
 class ContactModel(Base):
     name: str = Field(max_length=50)#(max=50)
     gender: str
     age: int
-    email: EmailStr
+    email: EmailStr = Field(examples=['marcelo@mail.com'])
 
 contact_list: Dict[int, ContactModel] = {}
 

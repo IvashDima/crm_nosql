@@ -18,6 +18,8 @@ class CrmDatabase():
 
     def insertContact(self, contact: ContactModel):
         return self.contacts_collection.insert_one({
+            "ext_id": contact.ext_id,
+            "created": contact.created,
             "name": contact.name,
             "gender": contact.gender,
             "age": contact.age,
@@ -32,6 +34,8 @@ class CrmDatabase():
         c = self.contacts_collection.find({"name": contact_name})[0]
         print(c)
         return ContactModel(
+                ext_id= c["ext_id"],
+                created= c["created"],
                 name=c["name"],
                 gender=c["gender"],
                 age=c["age"],

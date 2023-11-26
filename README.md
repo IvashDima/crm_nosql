@@ -26,8 +26,10 @@ pip install -r requirements.txt
 1. Run:
 python main.py  
 to run api server.
+
 2. You can checks methods via  Swagger: 
 http://localhost:4558/docs#/
+
 3. Connect to the database from a terminal to check data in MongoDB.
 Run the following commands:
 
@@ -35,8 +37,7 @@ mongosh
 use CrmDatabase
 db.contacts.find()
 
-4. 
-Show log: Log file is located in the root folder of the application with name: my_log_{currentdate}.log.
+4. Show log: Log file is located in the root folder of the application with name: my_log_{currentdate}.log.
 
 5. Run TESTs: 
 pytest -v test_api.py
