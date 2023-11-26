@@ -29,13 +29,13 @@ class CrmDatabase():
     def getAllContacts(self):
         return self.contacts_collection.find({})
 
-    def getContactByName(self, contact_name: str):
+    def getContactByName(self, contact_name: str) -> ContactModel:
         print(self.contacts_collection.find({"name": contact_name}))
         c = self.contacts_collection.find({"name": contact_name})[0]
         print(c)
         return ContactModel(
-                ext_id= c["ext_id"],
-                created= c["created"],
+                # ext_id= c["ext_id"],
+                # created= c["created"],
                 name=c["name"],
                 gender=c["gender"],
                 age=c["age"],
@@ -43,6 +43,8 @@ class CrmDatabase():
 
     def updateContactByName(self, contact_name: str, contact: ContactModel):
         return self.contacts_collection.replace_one({"name": contact_name},{
+            "ext_id": contact.ext_id,
+            "created": contact.created,
             "name": contact.name,
             "gender": contact.gender,
             "age": contact.age,

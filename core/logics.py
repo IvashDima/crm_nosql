@@ -18,8 +18,7 @@ def read_contacts():
     return result
 
 def read_contact_by_name(contact_name):
-    result = db.getContactByName(contact_name).model_dump()
-    return result
+    return db.getContactByName(contact_name).model_dump()
 
 def add_contact(contact: ContactModel):
     db.insertContact(contact)
